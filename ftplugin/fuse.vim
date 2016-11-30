@@ -7,7 +7,7 @@ setlocal foldmethod=expr
 setlocal foldexpr=fuse#GetFold(v:lnum)
 
 function! fuse#IndentLevel(lnum)
-	if getline(a:lnum) =~? '\v^\S*}$'
+	if getline(a:lnum) =~? '\v^\S*};?$'
 		return indent(a:lnum) / &shiftwidth + 1
 	else
 		return indent(a:lnum) / &shiftwidth
@@ -112,7 +112,6 @@ lua display_message()
 endfunction
 
 augroup fuselint
-	autocmd BufEnter *.fuse call fuse#Lint()
-	autocmd TextChangedI *.fuse call fuse#Lint()
+	autocmd BufEnter,TextChanged,TextChangedI *.fuse call fuse#Lint()
 	autocmd CursorMoved,CursorMovedI *.fuse call fuse#DisplayMessage()
 augroup END
