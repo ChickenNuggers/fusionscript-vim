@@ -205,3 +205,5 @@ syn region fuseComment matchgroup=fuseComment start="--\[\z(=*\)\[" end="\]\z1\]
 
 hi def link fuseComment Comment
 
+hi def link fuseWarning WarningMsg
+hi def link fuseError ErrorMsg
