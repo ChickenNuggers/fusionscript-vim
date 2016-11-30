@@ -94,7 +94,7 @@ function display_message()
 	if ast.context and not ok and w.line == ast.pos.y and w.col >=
 		ast.pos.x and w.col <= ast.pos.x + #ast.context then
 		has_redrawn_since = false
-		vim.command(("echo 'Syntax error in context %s (%d,%d)'"
+		vim.command(("echo 'Syntax error in context %q (%d,%d)'"
 			):format(ast.context, ast.pos.y, ast.pos.x))
 	elseif not ok and w.line == ast.pos.y then
 		has_redrawn_since = false
