@@ -52,10 +52,22 @@ endif
 
 " Fuse Linter Syntax Error
 sign define flse text=!> linehl=fuseWarning
+sign define dummy
 
 lua << EOFLUA
 local old_sign = ""
 local lexer = require("fusion.core.lexer")
+
+function replace_sign(ln, col, bn) -- line number, column number, buffer number
+	vim.command(("sign place %d line=1 name=dummy buffer=%d"):format(0xFD,
+		bn))
+	vim.command(("sign unplace %d"):format(0xFE))
+	vim.command("echo 'Removing old sign'")
+	vim.command(("sign place %d line=%d name=flse buffer=%d"):format(0xFE,
+		ln, bn))
+	vim.command(("sign unplace %d"):format(0xFD))
+	old_sign = ("%q,%q"):format(ln, col)
+end
 
 function lint()
 	b = vim.buffer()
@@ -69,12 +81,12 @@ function lint()
 			-- do nothing, already has cached sign
 			return
 		elseif old_sign ~= "" then
-			vim.command(("sign unplace %d"):format(0xFE))
+			return replace_sign(ast.pos.y, ast.pos.x, b.number)
 		end
-		old_sign = ("%q,%q"):format(ast.pos.y, ast.pos.x)
 		vim.command(("sign place %d line=%d name=%s buffer=%d"):format(
 			0xFE, ast.pos.y, "flse", b.number
 		))
+		old_sign = ("%q,%q"):format(ast.pos.y, ast.pos.x)
 	elseif old_sign ~= "" then
 		vim.command(("sign unplace %d"):format(0xFE))
 		old_sign = ""
