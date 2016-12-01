@@ -21,7 +21,7 @@ syn keyword fuseAssignment local new extends
 syn keyword fuseReturns break return yield
 syn keyword fuseBoolean true false
 syn keyword fuseConstant nil
-syn keyword fuseLogicalKeywords if else while for in
+syn keyword fuseLogicalKeywords if else while for in async
 
 hi def link fuseAssignment Keyword
 hi def link fuseReturns Keyword
@@ -41,11 +41,13 @@ hi def link fuseString String
 syn match fuseInstanceValue /@\%(\I\i*\)\?/
 syn match fuseClassName /\<\u\w*\>/
 syn match fuseConstant /\<[A-Z_]\+\>/
+syn match fuseIdentifier /\<[A-Za-z_][A-Za-z0-9]*\>/
 syn keyword fuseSelf self
 
 hi def link fuseInstanceValue Structure
 hi def link fuseClassName Structure
 hi def link fuseConstant Constant
+hi def link fuseIdentifier Identifier
 hi def link fuseSelf Structure
 
 syn match fuseEndOfLine ";$"
@@ -64,7 +66,7 @@ syn match fuseOperator "&&\|||"
 syn match fuseOperator "[][]"
 syn match fuseOperator ":"
 
-hi def link fuseOperator Delimiter
+hi def link fuseOperator PreProc
 
 syn keyword fuseFunction assert collectgarbage dofile error getmetatable
 syn keyword fuseFunction ipairs load loadfile next pairs pcall print rawequal
@@ -198,7 +200,7 @@ syn match fuseFunction /\<utf8.codes\>/
 syn match fuseFunction /\<utf8.len\>/
 syn match fuseFunction /\<utf8.offset\>/
 
-hi def link fuseFunction Identifier
+hi def link fuseFunction Constant
 
 syn match fuseComment "--.*$" contains=fuseTodo
 syn region fuseComment matchgroup=fuseComment start="--\[\z(=*\)\[" end="\]\z1\]" contains=fuseTodo,@Spell
