@@ -62,7 +62,6 @@ function replace_sign(ln, col, bn) -- line number, column number, buffer number
 	vim.command(("sign place %d line=1 name=dummy buffer=%d"):format(0xFD,
 		bn))
 	vim.command(("sign unplace %d"):format(0xFE))
-	vim.command("echo 'Removing old sign'")
 	vim.command(("sign place %d line=%d name=flse buffer=%d"):format(0xFE,
 		ln, bn))
 	vim.command(("sign unplace %d"):format(0xFD))
@@ -98,20 +97,24 @@ local has_redrawn_since = true
 function display_message()
 	w = vim.window()
 	b = vim.buffer()
+	local line, col = w.line, w.col
+	local text_line = b[line]
+	local sw = vim.eval("&shiftwidth")
+	tc = select(2, text_line:sub(1, col):gsub("\t", "")) -- tab count hax
 	local buffer_lines = {}
 	for i=1, #b do
 		table.insert(buffer_lines, b[i])
 	end
 	ok, ast = pcall(lexer.match, lexer, table.concat(buffer_lines, "\n"))
-	if ast.context and not ok and w.line == ast.pos.y and w.col >=
-		ast.pos.x and w.col <= ast.pos.x + #ast.context then
+	if ast.context and not ok and line == ast.pos.y and col >=
+		ast.pos.x and col <= ast.pos.x + #ast.context then
 		has_redrawn_since = false
 		vim.command(("echo 'Syntax error in context %q (%d,%d)'"
-			):format(ast.context, ast.pos.y, ast.pos.x))
-	elseif not ok and w.line == ast.pos.y then
+			):format(ast.context, ast.pos.y, ast.pos.x + sw * tc))
+	elseif not ok and line == ast.pos.y then
 		has_redrawn_since = false
 		vim.command(("echo 'Syntax error (%d,%d)'"):format(ast.pos.y,
-			ast.pos.x))
+			ast.pos.x + sw * tc))
 	elseif not has_redrawn_since then
 		vim.command("echo ''")
 		has_redrawn_since = true
