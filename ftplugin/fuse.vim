@@ -106,15 +106,19 @@ function display_message()
 		table.insert(buffer_lines, b[i])
 	end
 	ok, ast = pcall(lexer.match, lexer, table.concat(buffer_lines, "\n"))
-	if ast.context and not ok and line == ast.pos.y and col >=
-		ast.pos.x and col <= ast.pos.x + #ast.context then
+	local posx, posy
+	if not ok then
+		posx, posy = ast.pos.x, ast.pos.y
+	end
+	if not ok and line == posy and col >= posx + 1 and col <= posx +
+		#ast.context then
 		has_redrawn_since = false
 		vim.command(("echo 'Syntax error in context %q (%d,%d)'"
-			):format(ast.context, ast.pos.y, ast.pos.x + sw * tc))
-	elseif not ok and line == ast.pos.y then
+			):format(ast.context, posy, posx + sw * tc))
+	elseif not ok and line == posy then
 		has_redrawn_since = false
-		vim.command(("echo 'Syntax error (%d,%d)'"):format(ast.pos.y,
-			ast.pos.x + sw * tc))
+		vim.command(("echo 'Syntax error (%d,%d)'"):format(posy,
+			posx + sw * tc))
 	elseif not has_redrawn_since then
 		vim.command("echo ''")
 		has_redrawn_since = true
