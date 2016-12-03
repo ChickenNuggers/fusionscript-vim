@@ -21,7 +21,7 @@ syn keyword fuseAssignment local new extends
 syn keyword fuseReturns break return yield
 syn keyword fuseBoolean true false
 syn keyword fuseConstant nil
-syn keyword fuseLogicalKeywords if else while for in async
+syn keyword fuseLogicalKeywords if else elseif while for in async
 
 hi def link fuseAssignment Keyword
 hi def link fuseReturns Keyword
