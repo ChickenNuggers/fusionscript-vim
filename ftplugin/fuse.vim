@@ -68,6 +68,8 @@ function replace_sign(ln, col, bn) -- line number, column number, buffer number
 	old_sign = ("%q,%q"):format(ln, col)
 end
 
+local ok, ast
+
 function lint()
 	b = vim.buffer()
 	local buffer_lines = {}
@@ -101,24 +103,19 @@ function display_message()
 	local text_line = b[line]
 	local sw = vim.eval("&shiftwidth")
 	tc = select(2, text_line:sub(1, col):gsub("\t", "")) -- tab count hax
-	local buffer_lines = {}
-	for i=1, #b do
-		table.insert(buffer_lines, b[i])
-	end
-	ok, ast = pcall(lexer.match, lexer, table.concat(buffer_lines, "\n"))
 	local posx, posy
 	if not ok then
 		posx, posy = ast.pos.x, ast.pos.y
 	end
-	if not ok and line == posy and col >= posx + 1 and col <= posx +
+	if not ok and line == posy and col >= posx and col <= posx +
 		#ast.context then
 		has_redrawn_since = false
-		vim.command(("echo 'Syntax error in context %q (%d,%d)'"
-			):format(ast.context, posy, posx + sw * tc))
+		vim.command(("echo 'Syntax error in context %q (%d,%d): %q'"
+			):format(ast.context, posy, posx + sw * tc, ast.msg[2]))
 	elseif not ok and line == posy then
 		has_redrawn_since = false
-		vim.command(("echo 'Syntax error (%d,%d)'"):format(posy,
-			posx + sw * tc))
+		vim.command(("echo 'Syntax error (%d,%d): %q'"):format(posy,
+			posx + sw * tc, ast.msg[2]))
 	elseif not has_redrawn_since then
 		vim.command("echo ''")
 		has_redrawn_since = true
@@ -127,7 +124,7 @@ end
 EOFLUA
 
 function! fuse#Lint()
-lua lint()
+lua lint() display_message()
 endfunction
 
 function! fuse#DisplayMessage()
