@@ -123,8 +123,11 @@ function display_message()
 end
 EOFLUA
 
-function! fuse#Lint()
-lua lint() display_message()
+function! fuse#Lint(display)
+	lua lint()
+	if a:display == 0
+		lua display_message()
+	endif
 endfunction
 
 function! fuse#DisplayMessage()
@@ -132,6 +135,7 @@ lua display_message()
 endfunction
 
 augroup fuselint
-	autocmd BufEnter,TextChanged,TextChangedI *.fuse call fuse#Lint()
-	autocmd CursorMoved,CursorMovedI *.fuse call fuse#DisplayMessage()
+	autocmd BufEnter,TextChanged *.fuse call fuse#Lint(0) " normal is 0
+	autocmd TextChangedI *.fuse call fuse#Lint(1) " insert is 1
+	autocmd CursorMoved *.fuse call fuse#DisplayMessage()
 augroup END
