@@ -17,12 +17,14 @@ syn match fuseNumber  "\<\d\+[eE][-+]\=\d\+\>"
 hi def link fuseNumber Number
 
 " Keywords
-syn keyword fuseAssignment local new extends
+syn keyword fuseUsing fnl itr class ternary re
+syn keyword fuseAssignment local new extends using
 syn keyword fuseReturns break return yield
 syn keyword fuseBoolean true false
 syn keyword fuseConstant nil
 syn keyword fuseLogicalKeywords if else elseif while for in async
 
+hi def link fuseUsing Constant
 hi def link fuseAssignment Keyword
 hi def link fuseReturns Keyword
 hi def link fuseBoolean Boolean
@@ -41,13 +43,13 @@ hi def link fuseString String
 syn match fuseInstanceValue /@\%(\I\i*\)\?/
 syn match fuseClassName /\<\u\w*\>/
 syn match fuseConstant /\<[A-Z_]\+\>/
-syn match fuseIdentifier /\<[A-Za-z_][A-Za-z0-9]*\>/
+"syn match fuseIdentifier /\<[A-Za-z_][A-Za-z0-9]*\>/
 syn keyword fuseSelf self
 
 hi def link fuseInstanceValue Structure
 hi def link fuseClassName Structure
 hi def link fuseConstant Constant
-hi def link fuseIdentifier Identifier
+"hi def link fuseIdentifier Identifier
 hi def link fuseSelf Structure
 
 syn match fuseEndOfLine ";$"
@@ -55,6 +57,7 @@ syn match fuseEndOfLine ";$"
 hi def link fuseEndOfLine Delimiter
 
 " Operators
+syn match fuseOperator "?:"
 syn match fuseOperator "[()]"
 syn match fuseOperator "\(<<\|>>\|[-+*/%&^|<>!=]\)="
 syn match fuseOperator "<<\|>>\|&&\|||"
