@@ -52,23 +52,34 @@ endif
 
 " Fuse Linter Syntax Error
 sign define flse text=!> linehl=fuseWarning
+" Fuse Linter Semicolon
+sign define flsc text=!> linehl=Special
 sign define dummy
 
 lua << EOFLUA
 local old_sign = ""
 local lexer = require("fusion.core.lexer")
 
+local ok, ast
+
+function make_sign(ln, bn)
+	if ast.quick == "semicolon" then
+		vim.command(("sign place %d line=%d name=flsc buffer=%d"
+			):format(0xFE, ln, bn))
+	else
+		vim.command(("sign place %d line=%d name=flse buffer=%d"
+			):format(0xFE, ln, bn))
+	end
+end
+
 function replace_sign(ln, col, bn) -- line number, column number, buffer number
 	vim.command(("sign place %d line=1 name=dummy buffer=%d"):format(0xFD,
 		bn))
 	vim.command(("sign unplace %d"):format(0xFE))
-	vim.command(("sign place %d line=%d name=flse buffer=%d"):format(0xFE,
-		ln, bn))
+	make_sign(ln, bn)
 	vim.command(("sign unplace %d"):format(0xFD))
 	old_sign = ("%q,%q"):format(ln, col)
 end
-
-local ok, ast
 
 function lint()
 	b = vim.buffer()
@@ -84,9 +95,7 @@ function lint()
 		elseif old_sign ~= "" then
 			return replace_sign(ast.pos.y, ast.pos.x, b.number)
 		end
-		vim.command(("sign place %d line=%d name=%s buffer=%d"):format(
-			0xFE, ast.pos.y, "flse", b.number
-		))
+		make_sign(ast.pos.y, b.number)
 		old_sign = ("%q,%q"):format(ast.pos.y, ast.pos.x)
 	elseif old_sign ~= "" then
 		vim.command(("sign unplace %d"):format(0xFE))
