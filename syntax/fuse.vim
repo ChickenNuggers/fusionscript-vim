@@ -6,6 +6,8 @@
 
 let b:current_syntax = "fuse"
 
+set ts=4 sw=4 noet
+
 syn keyword fuseTodo contained TODO FIXME XXX
 
 " Numbers
@@ -18,7 +20,7 @@ hi def link fuseNumber Number
 
 " Keywords
 syn keyword fuseUsing fnl itr class ternary re
-syn keyword fuseAssignment local new extends using
+syn keyword fuseAssignment local class interface extends implements using
 syn keyword fuseReturns break return yield
 syn keyword fuseBoolean true false
 syn keyword fuseConstant nil
@@ -31,13 +33,34 @@ hi def link fuseBoolean Boolean
 hi def link fuseConstant Constant
 hi def link fuseLogicalKeywords Keyword
 
+" Operators
+syn match fuseOperator "?:"
+syn match fuseOperator "[()]"
+syn match fuseOperator "\(<<\|>>\|[-+*/%&^|<>!=]\)="
+syn match fuseOperator "<<\|>>\|&&\|||"
+syn match fuseOperator "[.!~*&%<>^|=,+-]"
+syn match fuseOperator "#"
+syn match fuseOperator "/[^/]*"
+syn match fuseOperator "/$"
+syn match fuseOperator "&&\|||"
+syn match fuseOperator "[][]"
+syn match fuseOperator ":"
+
+hi def link fuseOperator PreProc
+
 " Strings
 syn match fuseSpecial contained #\\[\\abfnrtvz'"]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}#
 syn region fuseString start=+'+ end=+'+ skip=+\\\\\|\\'+ contains=fuseSpecial
 syn region fuseString start=+"+ end=+"+ skip=+\\\\\|\\"+ contains=fuseSpecial
+syn region fuseString start="\[\z(=*\)\[" end="\]\z1\]"
 
 hi def link fuseSpecial Constant
 hi def link fuseString String
+
+" Regular expression literal
+syn match fuseRegEx "/[^/]*/"
+
+hi def link fuseRegEx Special
 
 " Names
 syn match fuseInstanceValue /@\%(\I\i*\)\?/
@@ -54,22 +77,7 @@ hi def link fuseSelf Structure
 
 syn match fuseEndOfLine ";$"
 
-hi def link fuseEndOfLine Delimiter
-
-" Operators
-syn match fuseOperator "?:"
-syn match fuseOperator "[()]"
-syn match fuseOperator "\(<<\|>>\|[-+*/%&^|<>!=]\)="
-syn match fuseOperator "<<\|>>\|&&\|||"
-syn match fuseOperator "[.!~*&%<>^|=,+-]"
-syn match fuseOperator "#"
-syn match fuseOperator "/[^/*=]"me=e-1
-syn match fuseOperator "/$"
-syn match fuseOperator "&&\|||"
-syn match fuseOperator "[][]"
-syn match fuseOperator ":"
-
-hi def link fuseOperator PreProc
+hi def link fuseEndOfLine Identifier
 
 syn keyword fuseFunction assert collectgarbage dofile error getmetatable
 syn keyword fuseFunction ipairs load loadfile next pairs pcall print rawequal
@@ -115,8 +123,6 @@ syn match fuseFunction /\<io.stdout\>/
 syn match fuseFunction /\<io.tmpfile\>/
 syn match fuseFunction /\<io.type\>/
 syn match fuseFunction /\<io.write\>/
-
-syn keyword fuseFunction close flush lines read seek setvbuf write
 
 syn match fuseFunction /\<math.abs\>/
 syn match fuseFunction /\<math.acos\>/
