@@ -112,19 +112,21 @@ function display_message()
 	local text_line = b[line]
 	local sw = vim.eval("&shiftwidth")
 	tc = select(2, text_line:sub(1, col):gsub("\t", "")) -- tab count hax
-	local posx, posy
+	local posx, posy, msg, ctx
 	if not ok then
+		msg = ast.msg[2]:gsub("[\r\n]", "");
+		ctx = ast.context:gsub("[\r\n]", "");
 		posx, posy = ast.pos.x, ast.pos.y
 	end
 	if not ok and line == posy and col >= posx and col <= posx +
 		#ast.context then
 		has_redrawn_since = false
 		vim.command(("echo 'Syntax error in context %q (%d,%d): %q'"
-			):format(ast.context, posy, posx + sw * tc, ast.msg[2]))
+			):format(ctx, posy, posx + sw * tc, msg))
 	elseif not ok and line == posy then
 		has_redrawn_since = false
 		vim.command(("echo 'Syntax error (%d,%d): %q'"):format(posy,
-			posx + sw * tc, ast.msg[2]))
+			posx + sw * tc, msg))
 	elseif not has_redrawn_since then
 		vim.command("echo ''")
 		has_redrawn_since = true
