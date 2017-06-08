@@ -11,4 +11,11 @@ function s:detect_fuse()
 	endif
 endfunction
 
+if exists('g:syntastic_extra_filetypes')
+	call add(g:syntastic_extra_filetypes, 'fuse')
+else
+	let g:syntastic_extra_filetypes = ['fuse']
+endif
+
+
 autocmd BufNewFile,BufRead * call s:detect_fuse()
