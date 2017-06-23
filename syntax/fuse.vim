@@ -49,10 +49,12 @@ syn match fuseOperator ":"
 hi def link fuseOperator PreProc
 
 " Strings
+syn include @lpeg-regex syntax/lpeg-re.vim
 syn match fuseSpecial contained #\\[\\abfnrtvz'"]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}#
 syn region fuseString start=+'+ end=+'+ skip=+\\\\\|\\'+ contains=fuseSpecial
 syn region fuseString start=+"+ end=+"+ skip=+\\\\\|\\"+ contains=fuseSpecial
 syn region fuseString start="\[\z(=*\)\[" end="\]\z1\]"
+syn region fuseString start="\[\z(=*\)\[ -- LPEG-RE" end="\]\z1\]" keepend contains=@lpeg-regex
 
 hi def link fuseSpecial Constant
 hi def link fuseString String
@@ -211,9 +213,12 @@ syn match fuseFunction /\<utf8.offset\>/
 
 hi def link fuseFunction Constant
 
-syn match fuseComment "--.*$" contains=fuseTodo
+syn include @fuse-comments syntax/fuse-comments.vim
+syn match fuseParam "@param [^ ]* [^ ]*" contains=fuseParamName,fuseParamType keepend
+syn match fuseComment "--.*$" contains=fuseTodo,fuseParam keepend
 syn region fuseComment matchgroup=fuseComment start="--\[\z(=*\)\[" end="\]\z1\]" contains=fuseTodo,@Spell
 
+hi def link fuseParam Normal
 hi def link fuseComment Comment
 
 hi def link fuseWarning WarningMsg
