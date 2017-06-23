@@ -1,7 +1,7 @@
 " Vim ftdetect file
 " Language: FusionScript
 " Maintainer: Ryan <ryan@hashbang.sh>
-" Latest Revision: 8 November 2016
+" Latest Revision: 2017-06-07
 
 autocmd BufNewFile,BufRead *.fuse set filetype=fuse
 
